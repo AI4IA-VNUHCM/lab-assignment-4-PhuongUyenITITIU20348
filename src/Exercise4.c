@@ -22,107 +22,98 @@ ____________________________________________________________________
 #include <stdlib.h>
 #define SIZE 100
 
-void Array2Dconverter(int arr[], int a[SIZE][SIZE], int m, int n)
-{
-	int row, column;
-	int counter = 0;
-	//Convert 1D array to 2D array
-	for (row = 0; row <= (m - 1); row ++){
-		for (column = 0; column <= (n - 1); column ++){
-			a[row][column] = arr[counter];
-			counter++;
-		}
-	}
-}
-
-void printArray(int a[SIZE][SIZE], int m, int n)
-{
-	int row, column;
-
-	for (row = 0; row <= (m - 1); row ++){
-		for (column = 0; column <= (n - 1); column ++){
-			printf("%d ", a[row][column]);
-		}
-		printf("\n");
-	}
-}
-
-void insertRow(int arr[], int a[SIZE][SIZE],int rowIndex, int m, int n){
-	//Your codes here
-	
-}
-
-void removeRow(int a[SIZE][SIZE], int rowIndex, int m, int n){
-	//Your codes here
-	
-}
-
-void insertCol(int arr[], int a[SIZE][SIZE],int colIndex, int m, int n){
-	//Your codes here
-	
-}
-
-void removeCol(int a[SIZE][SIZE], int colIndex, int m, int n){
-	//Your codes here
-	
-}
-
 int main(int argc, char *argv[]) {
 	//testing variable, applying it to your algorithm for auto-evaluating
 	int row = atoi(argv[1]);
 	int col = atoi(argv[2]);
-	int choice = atoi(argv[3]);
-	/* choice values:
-	1 for Insert one row
-	2 for Remove one row
-	3 for Insert one column
-	4 for Remove one column 
-	*/
-	int loc = atoi(argv[4]); //location of inserting/removing row/column
-	int a[SIZE][SIZE];
-	if(choice == 2 || choice == 4){
-		argc-=5;
-		int testcase[argc],i;
-		for(i=0; i<argc;i++){
-			testcase[i] = atoi(argv[i+5]);
-		}
-		Array2Dconverter(testcase,a,row,col);
-		if(choice == 2)
-			removeRow(a,loc,row,col);
-		else
-			removeCol(a,loc,row,col);
+	int action = atoi(argv[3]);
+	int location = atoi(argv[4]);
+    int i = 5;
+	argc-=i;
+    int rows[100][100];
+    if(action == 1){
+        // Insert row
+        row += 1;
+        int insert_row[col];
+        for(int j = 0; j < col; j++){
+            insert_row[j] = atoi(argv[i+j]);
+        }
+        i += col;
+        
+        // Build 2D array
+        for(int r = 0; r < row; r++){
+            if(r == location){
+                for(int c = 0; c < col; c++){
+                    rows[r][c] = insert_row[c];
+                }
+            }else{
+                for(int c = 0; c < col; c++){
+                    rows[r][c] = atoi(argv[i]);
+                    i++;
+                }
+            }
+        }
+    }else if(action == 2){
+        // Remove row
+        // Build 2D array
+        for(int r = 0; r < row; r++){
+            if(r == location){
+                i += col;
+                row -= 1;
+            }
+            for(int c = 0; c < col; c++){
+                rows[r][c] = atoi(argv[i]);
+                i++;
+            }
+        }
+    }else if(action == 3){
+        // Insert column
+        col += 1;
+        int insert_col[row];
+        for(int j = 0; j < row; j++){
+            insert_col[j] = atoi(argv[i+j]);
+        }
+        i += row;
+        
+        // Build 2D array
+        for(int r = 0; r < row; r++){
+            for(int c = 0; c < col; c++){
+                if(c == location){
+                    rows[r][c] = insert_col[r];
+                }else{
+                    rows[r][c] = atoi(argv[i]);
+                    i++;
+                }
+            }
+        }
+    }else if(action == 4){
+        // Remove column
+        // Build 2D array
+        bool is_skip = false;
+        for(int r = 0; r < row; r++){
+            for(int c = 0; c < col; c++){
+                if(c == location){
+                    i += 1;
+                    if(!is_skip){
+                        is_skip = true;
+                        col -= 1;
+                    }
+                }
+                rows[r][c] = atoi(argv[i]);
+                i++;
+            }
+        }
+    }else{
+        printf("Invalid option!");
+    }
 
+    for(int r = 0; r < row; r++){
+		for(int c = 0; c < col; c++){
+            printf("%d ", rows[r][c]);
+        }
+        printf("\n");
 	}
-	else if(choice == 1){
-		int in_row[col],column;
-		for (column = 0; column < col; column ++){
-			in_row[column]= atoi(argv[column+5]);
-		}
-		argc-=5;
-		argc-=col;
-		int testcase[argc],i;
-		for(i=0; i<argc;i++){
-			testcase[i] = atoi(argv[i+5+col]);
-		}
-		Array2Dconverter(testcase,a,row,col);
-		insertRow(in_row,a,loc,row,col);
-	}
-	else if(choice == 3){
-		int in_col[row],r;
-		for (r = 0; r < row; r ++){
-			in_col[r]= atoi(argv[r+5]);
-		}
-		argc-=5;
-		argc-=row;
-		int testcase[argc],i;
-		for(i=0; i<argc;i++){
-			testcase[i] = atoi(argv[i+5+row]);
-		}
-		Array2Dconverter(testcase,a,row,col);
-		insertCol(in_col,a,loc,row,col);
-	}
-	else
-		printf("Invalid option!");
-
+	
+    printf("\n");
 	return 0;
 }
